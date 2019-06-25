@@ -4,7 +4,7 @@
 #
 #	docker build --no-cache . -f Dockerfile -t postfwd:bcit
 #
-# See start-container.sh for wayto override default runtime variables 
+# See start-container.sh for way to override default runtime variables 
 
 FROM bcit/alpine
 
@@ -28,7 +28,6 @@ ENV CONF=postfwd.cf
 ##
 ## CONTAINER ARGS
 ##
-
 # configuration directory
 ENV ETC=/etc/postfwd
 # target for postfwd distribution
@@ -58,7 +57,7 @@ RUN rm -rf /tmp/*
 # Change working directory back 
 WORKDIR /
 
-# install stuff
+# Install packages
 RUN apk update && apk add \
 	perl \
 	perl-net-dns \
@@ -68,7 +67,7 @@ RUN apk update && apk add \
 	perl-time-hires \
 	perl-io-multiplex 
 
-# create stuff
+# Create users and groups
 RUN addgroup -g ${GID} ${GROUP}
 RUN adduser -u ${UID} -D -H -G ${GROUP} -h ${HOME} -s /bin/false ${USER}
 RUN mkdir -p ${ETC} ${HOME}
@@ -76,15 +75,15 @@ RUN mkdir -p ${ETC} ${HOME}
 # For external postfwd.cf file 
 COPY 50-copy-postfwd-config.sh docker-entrypoint.d/ 
 
-# set ownership & permissions
+# Set ownership & permissions
 RUN chown -R root:${GID} ${ETC} && chmod 0750 ${ETC} && chmod 0640 ${ETC}/*
 RUN chown -R ${UID}:${GID} ${HOME} && chmod -R 0700 ${HOME}
 RUN chown root:root ${TARGET}/sbin/postfwd* /usr/bin/postfwd-docker && chmod 0755 ${TARGET}/sbin/postfwd* /usr/bin/postfwd-docker
 
-# open port
+# Open port
 EXPOSE ${PORT}
 
-# start postfwd - don't worry about versions: postfwd1 will silently ignore postfwd2-specific arguments 
+# Start postfwd - don't worry about versions: postfwd1 will silently ignore postfwd2-specific arguments 
 CMD ${TARGET}/sbin/${PROG} --file=${ETC}/${CONF} --user=${USER} --group=${GROUP} \
 	--server_socket=tcp:0.0.0.0:${PORT} --cache_socket=unix::${HOME}/postfwd.cache \
 	--pidfile=${HOME}/postfwd.pid --save_rates=${HOME}/postfwd.rates --save_groups=${HOME}/postfwd.groups \
