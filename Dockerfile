@@ -45,8 +45,7 @@ ENV GID=110
 WORKDIR /tmp/
 
 # Pull latest postfwd version from site and extract
-RUN wget https://postfwd.org/postfwd-latest.tar.gz -O postfwd-latest.tar.gz
-RUN tar -xvf postfwd-latest.tar.gz
+RUN wget https://postfwd.org/postfwd-latest.tar.gz && tar -xvf postfwd-latest.tar.gz
 
 # Copy executables and default config 
 RUN cp postfwd/sbin/* ${TARGET}/sbin/
