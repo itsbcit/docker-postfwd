@@ -63,6 +63,6 @@ EXPOSE ${PORT}
 
 CMD ${TARGET}/sbin/${PROG} --file=${ETC}/${CONF} --user=${USER} --group=${GROUP} \
     --server_socket=tcp:${ADDRESS}:${PORT} --cache_socket=unix::${HOME}/postfwd.cache \
-  	--pidfile=${HOME}/postfwd.pid --save_rates=${HOME}/postfwd.rates --save_groups=${HOME}/postfwd.groups \
-  	--cache=${CACHE} ${EXTRA} \
-  	--stdout --nodaemon
+    --pidfile=${HOME}/postfwd.pid --save_rates=${HOME}/postfwd.rates --save_groups=${HOME}/postfwd.groups \
+    --cache=${CACHE} ${EXTRA} \
+    --stdout --nodaemon
