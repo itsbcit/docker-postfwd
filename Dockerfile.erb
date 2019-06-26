@@ -1,10 +1,10 @@
 FROM bcit/alpine:3.9
 # vim: syntax=dockerfile
 
-LABEL maintainer="David_Goodwin@bcit.ca, Juraj Ontkanin"
-LABEL version="2.02"
+LABEL maintainer="<%= maintainer %>"
+LABEL version="<%= version %>"
 
-ENV VERSION "2.02"
+ENV VERSION "<%= version %>"
 ENV CONFIGDIR /config
 
 ENV PROG postfwd2
