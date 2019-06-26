@@ -8,43 +8,46 @@
 
 FROM bcit/alpine
 
-LABEL maintainer="David Goodwin - David_Goodwin@bcit.ca"
+LABEL maintainer="David Goodwin - David_Goodwin@bcit.ca, Juraj Ontkanin"
 
 ##
 ## RUNTIME ARGS
 ##
+ENV CONFIGDIR /config
 # use 'postfwd1' or 'postfwd2' to switch between versions
 # go to http://postfwd.org/versions.html for more info
-ENV PROG=postfwd1
+ENV PROG postfwd1
 # port for postfwd
-ENV PORT=10040
+ENV PORT 10040
 # request cache in seconds. use '0' to disable
-ENV CACHE=60
+ENV CACHE 60
 # additional arguments, see postfwd -h or man page for more
-ENV EXTRA="--summary=600 --noidlestats"
+ENV EXTRA "--summary=600 --noidlestats"
 # get config file from ARG
-ENV CONF=postfwd.cf 
+ENV CONF postfwd.cf 
 
 ##
 ## CONTAINER ARGS
 ##
 # configuration directory
-ENV ETC=/etc/postfwd
+ENV ETC /etc/postfwd
 # target for postfwd distribution
-ENV TARGET=/usr
+ENV TARGET /usr
 # data directory
-ENV HOME=/var/lib/postfwd
+ENV HOME /var/lib/postfwd
 # user and group for execution
-ENV USER=postfw 
-ENV GROUP=postfw
-ENV UID=110
-ENV GID=110
+ENV USER postfw 
+ENV GROUP postfw
+ENV UID 110
+ENV GID 110
 
 # Change working directory 
 WORKDIR /tmp/
 
 # Pull latest postfwd version from site and extract
 RUN wget https://postfwd.org/postfwd-latest.tar.gz && tar -xvf postfwd-latest.tar.gz
+
+RUN mkdir /config
 
 # Copy executables and default config 
 RUN cp postfwd/sbin/* ${TARGET}/sbin/
