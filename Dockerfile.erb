@@ -29,6 +29,8 @@ RUN apk update && apk add \
     perl-time-hires \
     perl-io-multiplex 
 
+RUN mkdir "$CONFIGDIR"
+
 WORKDIR /tmp/
 
 RUN wget https://postfwd.org/postfwd-${VERSION}.tar.gz \
@@ -48,13 +50,11 @@ RUN addgroup -g ${GID} ${GROUP} \
  && mkdir -p /etc/postfwd "${HOME}" \
  && chown -R root:${GID} /etc/postfwd \
  && chmod 0750 /etc/postfwd \
- && chmod 0640 /etc/postfwd/* \
  && chown -R ${UID}:${GID} "${HOME}" \
  && chmod -R 0700 "${HOME}" \
  && chown root:root /usr/sbin/postfwd* /usr/bin/postfwd-docker \
  && chmod 0755 /usr/sbin/postfwd* /usr/bin/postfwd-docker
 
-RUN mkdir /config
 COPY 50-copy-postfwd-config.sh docker-entrypoint.d/ 
 
 EXPOSE ${PORT}
