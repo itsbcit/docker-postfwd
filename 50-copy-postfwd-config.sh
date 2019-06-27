@@ -1,3 +1,3 @@
-TEMP_CONFFILE="${CONFIGDIR}/postfwd.cf"
-[ -f "$TEMP_CONFFILE" ] && { cp $TEMP_CONFFILE ${ETC}/${CONF};chown -R root:${GID} ${ETC}/${CONF};chmod 0640 ${ETC}/${CONF};echo "copied custom: $TEMP_CONFFILE"; } \
-	|| echo "using default: ${ETC}/${CONF}"
+cp --dereference -r "$CONFIGDIR"/* /etc/postfwd/
+chown -R root:${GID} /etc/postfwd/*
+chmod 0640 /etc/postfwd/*

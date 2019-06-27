@@ -14,8 +14,6 @@ ENV CACHE 60
 ENV EXTRA "--summary=600 --noidlestats"
 ENV CONF postfwd.cf
 
-ENV ETC /etc/postfwd
-ENV TARGET /usr
 ENV HOME /var/lib/postfwd
 ENV USER postfw 
 ENV GROUP postfw
@@ -35,9 +33,9 @@ WORKDIR /tmp/
 
 RUN wget https://postfwd.org/postfwd-${VERSION}.tar.gz \
  && tar -xvf postfwd-${VERSION}.tar.gz \
- && cp postfwd/sbin/* ${TARGET}/sbin/ \
+ && cp postfwd/sbin/* /usr/sbin/ \
  && mkdir /etc/postfwd \
- && cp postfwd/etc/* /etc/postfwd/ \
+ && cp postfwd/etc/* "${CONFIGDIR}" \
  && mkdir /usr/bin/postfwd-docker \
  && cp postfwd/docker/postfwd-docker.sh /usr/bin/postfwd-docker
 
@@ -46,23 +44,28 @@ RUN rm -rf /tmp/*
 WORKDIR /
 
 RUN addgroup -g ${GID} ${GROUP} \
- && adduser -u ${UID} -D -H -G ${GROUP} -h ${HOME} -s /bin/false ${USER} \
- && mkdir -p ${ETC} ${HOME} \
- && chown -R root:${GID} ${ETC} \
- && chmod 0750 ${ETC} \
- && chmod 0640 ${ETC}/* \
- && chown -R ${UID}:${GID} ${HOME} \
- && chmod -R 0700 ${HOME} \
- && chown root:root ${TARGET}/sbin/postfwd* /usr/bin/postfwd-docker \
- && chmod 0755 ${TARGET}/sbin/postfwd* /usr/bin/postfwd-docker
+ && adduser -u ${UID} -D -H -G ${GROUP} -h "${HOME}" -s /bin/false ${USER} \
+ && mkdir -p /etc/postfwd "${HOME}" \
+ && chown -R root:${GID} /etc/postfwd \
+ && chmod 0750 /etc/postfwd \
+ && chmod 0640 /etc/postfwd/* \
+ && chown -R ${UID}:${GID} "${HOME}" \
+ && chmod -R 0700 "${HOME}" \
+ && chown root:root /usr/sbin/postfwd* /usr/bin/postfwd-docker \
+ && chmod 0755 /usr/sbin/postfwd* /usr/bin/postfwd-docker
 
 RUN mkdir /config
 COPY 50-copy-postfwd-config.sh docker-entrypoint.d/ 
 
 EXPOSE ${PORT}
 
-CMD ${TARGET}/sbin/${PROG} --file=${ETC}/${CONF} --user=${USER} --group=${GROUP} \
-    --server_socket=tcp:${ADDRESS}:${PORT} --cache_socket=unix::${HOME}/postfwd.cache \
-    --pidfile=${HOME}/postfwd.pid --save_rates=${HOME}/postfwd.rates --save_groups=${HOME}/postfwd.groups \
-    --cache=${CACHE} ${EXTRA} \
-    --stdout --nodaemon
+CMD /usr/sbin/${PROG} --file="/etc/postfwd/${CONF}" \
+    --user=${USER} --group=${GROUP} \
+    --server_socket=tcp:${ADDRESS}:${PORT} \
+    --cache_socket="unix::${HOME}/postfwd.cache" \
+    --cache=${CACHE} \
+    --save_rates="${HOME}/postfwd.rates" \
+    --save_groups="${HOME}/postfwd.groups" \
+    --pidfile="${HOME}/postfwd.pid" \
+    --stdout --nodaemon \
+    ${EXTRA}
