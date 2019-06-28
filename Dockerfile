@@ -19,7 +19,8 @@ ENV GROUP postfw
 ENV UID 110
 ENV GID 110
 
-RUN apk update && apk add \
+RUN apk --no-cache update \
+ && apk --no-cache add \
     perl \
     perl-net-dns \
     perl-net-server \
