@@ -29,7 +29,7 @@ RUN apk --no-cache update \
     perl-time-hires \
     perl-io-multiplex 
 
-RUN mkdir "$CONFIGDIR"
+RUN mkdir -p "$CONFIGDIR"
 
 WORKDIR /tmp/
 
@@ -37,7 +37,7 @@ RUN wget https://postfwd.org/postfwd-<%= version %>.tar.gz \
  && tar -xvf postfwd-<%= version %>.tar.gz \
  && cp postfwd/sbin/* /usr/sbin/ \
  && mkdir /etc/postfwd \
- && cp postfwd/etc/* "${CONFIGDIR}" \
+ && cp postfwd/etc/* /etc/postfwd/ \
  && mkdir /usr/bin/postfwd-docker \
  && cp postfwd/docker/postfwd-docker.sh /usr/bin/postfwd-docker
 
@@ -47,7 +47,7 @@ WORKDIR /
 
 RUN addgroup -g ${GID} ${GROUP} \
  && adduser -u ${UID} -D -H -G ${GROUP} -h "${HOME}" -s /bin/false ${USER} \
- && mkdir -p /etc/postfwd "${HOME}" \
+ && mkdir -p "${HOME}" \
  && chown -R root:${GID} /etc/postfwd \
  && chmod 0750 /etc/postfwd \
  && chown -R ${UID}:${GID} "${HOME}" \
