@@ -57,7 +57,7 @@ RUN addgroup -g ${GID} ${GROUP} \
  && chown root:root /usr/sbin/postfwd* /usr/bin/postfwd-docker \
  && chmod 0755 /usr/sbin/postfwd* /usr/bin/postfwd-docker
 
-COPY 50-copy-postfwd-config.sh docker-entrypoint.d/ 
+COPY 50-copy-postfwd-config.sh /docker-entrypoint.d/50-copy-postfwd-config.sh
 
 EXPOSE ${PORT}
 
