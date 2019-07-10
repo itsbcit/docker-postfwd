@@ -4,6 +4,8 @@ FROM bcit/alpine:3.9
 LABEL maintainer="David_Goodwin@bcit.ca, Juraj Ontkanin"
 LABEL version="2.02"
 
+ENV DOCKERIZE_ENV production
+
 ENV CONFIGDIR /config
 
 ENV PROG postfwd2

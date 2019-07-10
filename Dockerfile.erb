@@ -4,6 +4,8 @@ FROM bcit/alpine:3.9
 LABEL maintainer="<%= maintainer %>"
 LABEL version="<%= version %>"
 
+ENV DOCKERIZE_ENV production
+
 ENV CONFIGDIR /config
 
 ENV PROG postfwd2
